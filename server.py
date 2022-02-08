@@ -1,6 +1,9 @@
 import json
 from flask import Flask,render_template,request,redirect,flash,url_for
+import urllib.request
 
+from io import BytesIO
+import json
 
 def loadClubs():
     with open('clubs.json') as c:
@@ -26,8 +29,13 @@ def index():
 
 @app.route('/showSummary',methods=['POST'])
 def showSummary():
-    club = [club for club in clubs if club['email'] == request.form['email']][0]
-    return render_template('welcome.html',club=club,competitions=competitions)
+    try:
+        club = [club for club in clubs if club['email'] == request.form['email']][0]
+        return render_template('welcome.html',club=club,competitions=competitions)        
+    except:
+        print('Error: wrong email adress')
+        return render_template('index.html', error=True)
+    
 
 
 @app.route('/book/<competition>/<club>')
@@ -57,3 +65,6 @@ def purchasePlaces():
 @app.route('/logout')
 def logout():
     return redirect(url_for('index'))
+
+# if __name__ == '__main__':
+#    app.run(host='127.0.0.1', port=5050, debug=True)    
