@@ -45,7 +45,6 @@ class TestLoginEmail:
             Should return response 200 with right email
         """
 
-        mocker.patch.object(server, 'clubs', clubs)
         response = client.post('/showSummary',
                                data=dict(email="john@simplylift.co"),
                                follow_redirects=True
@@ -59,7 +58,6 @@ class TestLoginEmail:
         """
             Should return a response 200 when providing wrong email
         """
-        mocker.patch.object(server, 'clubs', clubs)
         response = client.post('/showSummary',
                               data=dict(email="wrong_email@mail.com"),
                               follow_redirects=True
