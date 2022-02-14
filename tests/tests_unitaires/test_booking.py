@@ -36,4 +36,15 @@ class TestBooking:
         print('test test')
         print(response.data)
         assert response.status_code == 200
+        assert "You can't book more places than the points you have" in html_response
+
+    
+    def test_book_with_allowed_number_of_points(self, client, clubs, competitions, mocker):
+        """
+            Should return a 200 response and leads to the homepage
+        """
+        response = client.post('/purchasePlaces',
+                                data={'places':"14", 'competition': competitions[0]['name'], 'club': clubs[0]['name']})
+        html_response = response.data.decode()
+        assert response.status_code == 200
         assert "Welcome" in html_response

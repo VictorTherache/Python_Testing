@@ -13,5 +13,8 @@
         <label for="places">How many places?</label><input type="number" name="places" id=""/>
         <button type="submit">Book</button>
     </form>
+    {% if error == "more_points_than_club" %}
+    <h3 style="color: red; font-weight: 100;font-size: small;">You can't book more places than the points you have</h3>
+    {% endif %}
 </body>
 </html>
