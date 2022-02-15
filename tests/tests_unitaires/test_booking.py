@@ -65,4 +65,16 @@ class TestBooking():
                                 data={'places':"13", 'competition': competitions[0]['name'], 'club': clubs[0]['name']})
         html_response = response.data.decode()
         assert response.status_code == 200
-        assert "You can't book more places than the points you have" in html_response
+        assert "You can't book more than 12 places!" in html_response
+
+
+    # def test_club_points_are_substracted_when_booking(self, client, clubs, competitions, mocker):
+    #     """
+    #         The clubs points should be substracted with the number
+    #         of places chose when booking
+    #     """
+    #     response = client.post('/purchasePlaces',
+    #                             data={'places':"5", 'competition': competitions[0]['name'], 'club': clubs[0]['name']})
+    #     html_response = response.data.decode()
+    #     assert response.status_code == 200
+    #     assert "You can't book more places than the points you have" in html_response
