@@ -54,14 +54,17 @@ def book(competition,club):
 def purchasePlaces():
     competition = [c for c in competitions if c['name'] == request.form['competition']][0]
     club = [c for c in clubs if c['name'] == request.form['club']][0]
+    print('________________________________')
+    print(clubs)
     placesRequired = int(request.form['places'])
-    if int(club['points']) < int(request.form['places']):
+    if int(club['points']) < placesRequired:
         error = "more_points_than_club"
-        return render_template('booking.html',club=club, competition=competition, error=error)
-    if int(request.form['places']) > 12:
+        return render_template('booking.html',club=club, competition=competition, error=error, point=club['points'], place=placesRequired)
+    if placesRequired > 12:
         error = "more_than_12_places"
         return render_template('booking.html',club=club, competition=competition, error=error)
     competition['numberOfPlaces'] = int(competition['numberOfPlaces'])-placesRequired
+    club['points'] = int(club['points']) - placesRequired
     flash('Great-booking complete!')
     return render_template('welcome.html', club=club, competitions=competitions)
 
