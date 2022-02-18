@@ -6,7 +6,9 @@
 </head>
 <body>
         <h2>Welcome, {{club['email']}} </h2><a href="{{url_for('logout')}}">Logout</a>
-
+        {% if error == "past_competition" %}
+            <h3 style="color: red; font-weight: 100;font-size: small;">This competition has already happened! Please book an upoming event</h3>
+        {% endif %}    
     {% with messages = get_flashed_messages()%}
     {% if messages %}
         <ul>

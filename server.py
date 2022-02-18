@@ -1,7 +1,7 @@
 import json
 from flask import Flask,render_template,request,redirect,flash,url_for, abort
 import urllib.request
-
+from datetime import date, datetime
 from io import BytesIO
 import json
 
@@ -54,8 +54,6 @@ def book(competition,club):
 def purchasePlaces():
     competition = [c for c in competitions if c['name'] == request.form['competition']][0]
     club = [c for c in clubs if c['name'] == request.form['club']][0]
-    print('________________________________')
-    print(clubs)
     placesRequired = int(request.form['places'])
     if int(club['points']) < placesRequired:
         error = "more_points_than_club"
@@ -63,6 +61,12 @@ def purchasePlaces():
     if placesRequired > 12:
         error = "more_than_12_places"
         return render_template('booking.html',club=club, competition=competition, error=error)
+    today = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
+    today_formatted = datetime.strptime(today, '%Y-%m-%d %H:%M:%S')
+    competition_date = datetime.strptime(competitions[0]['date'], '%Y-%m-%d %H:%M:%S')
+    if today_formatted > competition_date:
+        error = "past_competition"
+        return render_template('welcome.html',club=club, competitions=competitions, error=error)        
     competition['numberOfPlaces'] = int(competition['numberOfPlaces'])-placesRequired
     club['points'] = int(club['points']) - placesRequired
     flash('Great-booking complete!')
