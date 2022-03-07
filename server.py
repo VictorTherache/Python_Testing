@@ -55,6 +55,7 @@ def purchasePlaces():
     competition = [c for c in competitions if c['name'] == request.form['competition']][0]
     club = [c for c in clubs if c['name'] == request.form['club']][0]
     placesRequired = int(request.form['places'])
+
     if int(club['points']) < placesRequired:
         error = "more_points_than_club"
         return render_template('booking.html',club=club, competition=competition, error=error, point=club['points'], place=placesRequired)
@@ -63,7 +64,7 @@ def purchasePlaces():
         return render_template('booking.html',club=club, competition=competition, error=error)
     today = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
     today_formatted = datetime.strptime(today, '%Y-%m-%d %H:%M:%S')
-    competition_date = datetime.strptime(competitions[0]['date'], '%Y-%m-%d %H:%M:%S')
+    competition_date = datetime.strptime(competition['date'], '%Y-%m-%d %H:%M:%S')
     if today_formatted > competition_date:
         error = "past_competition"
         return render_template('welcome.html',club=club, competitions=competitions, error=error)        
