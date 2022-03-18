@@ -3,7 +3,7 @@
 1. Why
 
 
-    This is a proof of concept (POC) project to show a light-weight version of our competition booking platform. The aim is the keep things as light as possible, and use feedback from the users to iterate.
+    This is a proof of concept (POC) project to show a light-weight version of our competition booking platform. The aim is to keep things as light as possible, and use feedback from the users to iterate.
 
 2. Getting Started
 
@@ -49,3 +49,15 @@
     We also like to show how well we're testing, so there's a module called 
     [coverage](https://coverage.readthedocs.io/en/coverage-5.1/) you should add to your project.
 
+    * For unit testing : 
+      `pytest tests/unit_tests/`
+    * For functionnal tests:
+      `pytest tests/functional_tests`
+    * For integration tests:
+      `pytest tests/integration_tests`
+    * To check the test coverage:
+      `pytest --cov=. --cov-report html`
+      To use Locust:
+      `locust -f tests/performance_tests/locustfile.py `
+      `http://localhost:8089/`
+      Number of users: 6 and Host : http://127.0.0.1:5000/
