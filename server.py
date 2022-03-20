@@ -5,6 +5,10 @@ from datetime import date, datetime
 from io import BytesIO
 import json
 
+from booking_functions.check_purchase_places import (check_club_has_enough_points,
+                                                     check_competition_in_future,
+                                                     check_less_than_12)
+
 def loadClubs():
     with open('clubs.json') as c:
          listOfClubs = json.load(c)['clubs']
@@ -47,7 +51,7 @@ def book(competition,club):
         return render_template('booking.html',club=foundClub,competition=foundCompetition)
     else:
         flash("Something went wrong-please try again")
-        return render_template('welcome.html', club=club, competitions=competitions)
+        return render_template('welcome.html', club=club, clubs=clubs, competitions=competitions)
 
 
 @app.route('/purchasePlaces',methods=['POST'])
@@ -55,31 +59,33 @@ def purchasePlaces():
     competition = [c for c in competitions if c['name'] == request.form['competition']][0]
     club = [c for c in clubs if c['name'] == request.form['club']][0]
     placesRequired = int(request.form['places'])
+    if check_club_has_enough_points(club, placesRequired) == False:
+        return render_template('booking.html',club=club, 
+                                competition=competition, 
+                                error="not_enough_points", 
+                                point=club['points'], 
+                                place=placesRequired)
+    if check_less_than_12(placesRequired) == False:
+        return render_template('booking.html',club=club, 
+                                competition=competition, 
+                                error="more_than_12_places", 
+                                point=club['points'], 
+                                place=placesRequired)
+    if check_competition_in_future(competition) == False:
+        return render_template('welcome.html',
+                                club=club, 
+                                competitions=competitions,
+                                clubs=clubs, 
+                                error="past_competition")        
 
-    if int(club['points']) < placesRequired:
-        error = "more_points_than_club"
-        return render_template('booking.html',club=club, competition=competition, error=error, point=club['points'], place=placesRequired)
-    if placesRequired > 12:
-        error = "more_than_12_places"
-        return render_template('booking.html',club=club, competition=competition, error=error)
-    today = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
-    today_formatted = datetime.strptime(today, '%Y-%m-%d %H:%M:%S')
-    competition_date = datetime.strptime(competition['date'], '%Y-%m-%d %H:%M:%S')
-    if today_formatted > competition_date:
-        error = "past_competition"
-        return render_template('welcome.html',club=club, competitions=competitions, error=error)        
     competition['numberOfPlaces'] = int(competition['numberOfPlaces'])-placesRequired
-    club['points'] = int(club['points']) - placesRequired
+    club['points'] = int(club['points']) - (placesRequired*3)
+    
     flash('Great-booking complete!')
-    return render_template('welcome.html', club=club, competitions=competitions)
+    return render_template('welcome.html', club=club, clubs=clubs, competitions=competitions)
 
-
-# TODO: Add route for points display
 
 
 @app.route('/logout')
 def logout():
     return redirect(url_for('index'))
-
-# if __name__ == '__main__':
-#    app.run(host='127.0.0.1', port=5050, debug=True)    
