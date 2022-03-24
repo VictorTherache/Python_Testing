@@ -5,6 +5,7 @@ from datetime import date, datetime
 from io import BytesIO
 import json
 
+
 def loadClubs():
     with open('clubs.json') as c:
          listOfClubs = json.load(c)['clubs']
@@ -55,7 +56,6 @@ def purchasePlaces():
     competition = [c for c in competitions if c['name'] == request.form['competition']][0]
     club = [c for c in clubs if c['name'] == request.form['club']][0]
     placesRequired = int(request.form['places'])
-
     if int(club['points']) < placesRequired:
         error = "more_points_than_club"
         return render_template('booking.html',club=club, competition=competition, error=error, point=club['points'], place=placesRequired)
@@ -74,12 +74,6 @@ def purchasePlaces():
     return render_template('welcome.html', club=club, competitions=competitions)
 
 
-# TODO: Add route for points display
-
-
 @app.route('/logout')
 def logout():
     return redirect(url_for('index'))
-
-# if __name__ == '__main__':
-#    app.run(host='127.0.0.1', port=5050, debug=True)    
